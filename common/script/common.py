@@ -83,6 +83,12 @@ def Quaternion2RotationMatrc(w, x, y, z):
                         w ^ 2 - x ^ 2 - y ^ 2 + z ^ 2]])
     return rotMat
 
+def NormalizeAngle(angle):
+    """转换到[-pi, pi]"""
+    norm_angle = fmod(angle+np.pi, 2*np.pi)
+    if norm_angle < 0.0:
+        norm_angle += (2.0*np.pi)        
+    return norm_angle - np.pi
 
 def IsNonDecrease(seq):
     """判断 seq 是否为非递减序列
