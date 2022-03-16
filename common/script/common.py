@@ -83,12 +83,17 @@ def Quaternion2RotationMatrc(w, x, y, z):
                         w ^ 2 - x ^ 2 - y ^ 2 + z ^ 2]])
     return rotMat
 
-def NormalizeAngle(angle):
-    """转换到[-pi, pi]"""
-    norm_angle = fmod(angle+np.pi, 2*np.pi)
-    if norm_angle < 0.0:
-        norm_angle += (2.0*np.pi)        
-    return norm_angle - np.pi
+def WrapToPi(radian):
+    """转换到[-pi, pi]
+    Args:
+        radian: float类，待转换弧度
+    Returns:
+        tf_radian: float类，转换后的弧度
+    """
+    tf_radian = fmod(radian + np.pi, 2 * np.pi)
+    if tf_radian < 0.0:
+        tf_radian += (2.0 * np.pi)        
+    return tf_radian - np.pi
 
 def IsNonDecrease(seq):
     """判断 seq 是否为非递减序列
