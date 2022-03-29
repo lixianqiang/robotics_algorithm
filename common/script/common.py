@@ -111,6 +111,43 @@ def IsNonDecrease(seq):
     return all(x <= y for x, y in zip(seq, seq[1:]))
 
 
+def MinMaxScaler(mat):
+    """归一化
+    按列向量的方式进行归一化处理
+    """
+    norm_mat = (mat - np.min(mat, axis=0)) / (np.max(mat, axis=0) - np.min(mat, axis=0))
+    return norm_mat
+
+
+def QuickSort(array, left=None, right=None, key=None):
+    """快速排序"""
+    def Partition(array, left, right):
+        pivot = left
+        index = pivot + 1
+        i = index
+        while i <= right:
+            if key(array[i]) < key(array[pivot]):
+                Swap(array, i, index)
+                index += 1
+            i += 1
+        Swap(array, pivot, index - 1)
+        return index - 1
+
+    def Swap(array, i, j):
+        array[i], array[j] = array[j], array[i]
+
+    if key is None:
+        key = lambda x: x
+    left = 0 if not isinstance(left, (int, float)) else left
+    right = len(array) - 1 if not isinstance(right, (int, float)) else right
+    if left < right:
+        partitionIndex = Partition(array, left, right)
+        QuickSort(array, left, partitionIndex - 1, key)
+        QuickSort(array, partitionIndex + 1, right, key)
+    return array
+
+
+# TODO 未测试
 def SetTimer(dt):
     """异步计时器实现
 
