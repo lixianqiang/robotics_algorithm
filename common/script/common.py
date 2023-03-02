@@ -213,7 +213,7 @@ def GetNext(pattern):
         pattern: 匹配模板，string类
 
     Returns:
-        idxList: 索引列表，主串中所有匹配的位置索引
+        next: 部分匹配表，用于KMP匹配算法，list类
     """
     pidx = 0  # index of the current character in the pattern
     nidx = 1  # index of the current character in the next array (Partial Match Table)
@@ -238,7 +238,7 @@ def KMP(str, pattern):
         pattern: 匹配模板，string类
 
     Returns:
-        idxList: 索引列表，主串中所有匹配的位置索引
+        idxList: 索引列表，主串中所有匹配的位置索引，list类
 
     参考资料:
         https://www.ruanyifeng.com/blog/2013/05/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm.html
