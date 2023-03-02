@@ -54,7 +54,7 @@ def AngleDiff(endAngle, startAngle):
 def Quaternions2EulerAngle(w, x, y, z):
     """四元素转欧拉角
 
-    Args: 
+    Args:
         w,x,y,z: float类，分别对应四元数的实部与三个虚部
 
     Returns:
@@ -69,7 +69,7 @@ def Quaternions2EulerAngle(w, x, y, z):
 def Quaternion2RotationMatrc(w, x, y, z):
     """四元数转旋转矩阵
 
-    Args: 
+    Args:
         w,x,y,z: float类，分别对应四元数的实部与三个虚部
 
     Returns:
@@ -92,7 +92,7 @@ def WrapToPi(radian):
     """
     tf_radian = fmod(radian + np.pi, 2 * np.pi)
     if tf_radian < 0.0:
-        tf_radian += (2.0 * np.pi)        
+        tf_radian += (2.0 * np.pi)
     return tf_radian - np.pi
 
 def IsNonDecrease(seq):
@@ -205,3 +205,61 @@ def CalStepSize(pathLen, stepSize, searchMothed='dichotomy'):
             testMulti = minMulti + (maxMulti - minMulti) / 2
         stepSize = pathLen / minMulti
         return stepSize
+
+def GetNext(pattern):
+    """返回Next数组，即部分匹配表（Partial Match Table）
+
+    Args:
+        pattern: 匹配模板，string类
+
+    Returns:
+        idxList: 索引列表，主串中所有匹配的位置索引
+    """
+    pidx = 0  # index of the current character in the pattern
+    nidx = 1  # index of the current character in the next array (Partial Match Table)
+    next = [0] 
+    while nidx < len(pattern):
+        if pattern[pidx] == pattern[nidx]:
+            pidx += 1
+            nidx += 1
+            next.append(pidx)
+        elif pidx == 0 and pattern[pidx] != pattern[nidx]:
+            nidx += 1
+            next.append(0)
+        elif pidx != 0 and pattern[pidx] != pattern[nidx]:
+            pidx = next[pidx - 1]
+    return next
+
+def KMP(str, pattern):
+    """KMP算法实现
+
+    Args:
+        str: 待匹配主字符串，string类
+        pattern: 匹配模板，string类
+
+    Returns:
+        idxList: 索引列表，主串中所有匹配的位置索引
+
+    参考资料:
+        https://www.ruanyifeng.com/blog/2013/05/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm.html
+        https://www.zhihu.com/question/21923021
+    """
+    idxList = []
+    if len(pattern) == 0:
+        return idxList
+    pidx = 0
+    sidx = 0
+    next = GetNext(pattern)
+    while sidx < len(str):
+        if str[sidx] == pattern[pidx]:
+            sidx += 1
+            pidx += 1
+        elif pidx == 0 and str[sidx] != pattern[pidx]:
+            sidx += 1
+        elif pidx != 0 and str[sidx] != pattern[pidx]:
+            pidx = next[pidx - 1]
+        if pidx == len(pattern):
+            idxList.append(sidx - pidx)
+            pidx = 0
+
+    return idxList
