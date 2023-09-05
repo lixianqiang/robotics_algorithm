@@ -50,6 +50,51 @@ def AngleDiff(endAngle, startAngle):
         diffAngle = deltaAngle
     return diffAngle
 
+def CalcCurvature(curr_p, prev_p, next_p):
+    """计算门格尔曲率
+    trick: 向量外积=向量组成的四边形的面积 向量组成三角形面积=0.5*向量外积
+    参考资料: 
+        https://github.dev/lixianqiang/robotics_algorithm/blob/master/common/script/common.py
+    """
+    denominator = CalcDistance(prev_p, curr_p) * CalcDistance(curr_p, next_p) * CalcDistance(prev_p, next_p)
+    return 2.0 * ((curr_p[0] - prev_p[0]) * (next_p[1] - prev_p[1]) - (curr_p[1] - prev_p[1]) * (
+            next_p[0] - prev_p[0])) / denominator
+
+def IsShiftPoint(curr_p, prev_p, next_p):
+    """计算换档位
+    trick: 车辆实际轨迹不存在突变(除了换档点), 那么换档点与前后轨迹点组成的夹角>=90,对应的余弦值<=0
+    """
+    dot_product = (curr_p[0] - prev_p[0]) * (next_p[0] - curr_p[0]) + (curr_p[1] - prev_p[1]) * (
+            next_p[1] - curr_p[1])
+    norm_vector1 = CalcDistance(prev_p, curr_p)
+    norm_vector2 = CalcDistance(curr_p, next_p)
+    cos_theta = dot_product / (norm_vector1 * norm_vector2)
+    if (cos_theta < 0):
+        return True
+    return False
+
+def ConvertQuaternionToYaw(quaternion):
+    """四元数转航向角
+    x,y,z,w对应ROS的geometry_msgs的Quaternion是一一对应
+    Returns:
+        yaw: 弧度制, 区间范围[-pi, pi]
+    """
+    x, y, z, w = quaternion
+    t0 = +2.0 * (w * z + x * y)
+    t1 = +1.0 - 2.0 * (y * y + z * z)
+    yaw = math.atan2(t0, t1)
+    return yaw
+
+def ConvertYawToQuaternion(yaw):
+    """yaw角转四元数
+    输出的四元数与ROS的geometry_msgs的Quaternion是一一对应
+    """
+    quaternion = [0.0, 0.0, 0.0, 0.0]
+    quaternion[0] = 0.0
+    quaternion[1] = 0.0
+    quaternion[2] = math.sin(yaw / 2.0)
+    quaternion[3] = math.cos(yaw / 2.0)
+    return quaternion
 
 def Quaternions2EulerAngle(w, x, y, z):
     """四元素转欧拉角
