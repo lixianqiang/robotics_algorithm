@@ -72,6 +72,11 @@ def IsShiftPoint(curr_p, prev_p, next_p):
     if (cos_theta < 0):
         return True
     return False
+    
+# import tf_transformations
+# def ConvertQuaternionToYaw(quaternion):
+#     _, _, yaw = tf_transformations.euler_from_quaternion(quaternion)
+#     return yaw
 
 def ConvertQuaternionToYaw(quaternion):
     """四元数转航向角
@@ -85,6 +90,11 @@ def ConvertQuaternionToYaw(quaternion):
     yaw = math.atan2(t0, t1)
     return yaw
 
+# import tf_transformations
+# def ConvertYawToQuaternion(yaw):
+#     quat = tf_transformations.quaternion_from_euler(0, 0, yaw)
+#     return quat
+    
 def ConvertYawToQuaternion(yaw):
     """yaw角转四元数
     输出的四元数与ROS的geometry_msgs的Quaternion是一一对应
